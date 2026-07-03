@@ -25,3 +25,12 @@
 as i did not implement partial updates at the moment.
 
 - to delete a user send a `DELETE` request to the user page.
+
+# screenshots
+![1](screenshots/postman7)
+![2](screenshots/postman6)
+![3](screenshots/postman5)
+![4](screenshots/postman4)
+![5](screenshots/postman3)
+![6](screenshots/postman2)
+![7](screenshots/postman1)
