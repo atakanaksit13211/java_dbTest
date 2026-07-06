@@ -1,21 +1,42 @@
 package io.github.atakanaksit13211.java_dbTest;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "user", schema = "public")
-class User {
+
+public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue //(strategy = GenerationType.IDENTITY)
     private  Long   user_id;
 
     private  String user_name;
     private  String password_salt;
     private  String password_hash;
     private  String email_address;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    @JsonBackReference // prevent infinite recursion as borrowings will also try to print users
+    private List<Borrowing> borrowings;
+
+    @ManyToOne //(fetch = FetchType.LAZY)
+    @JoinColumn(name = "address_id")
+    @JsonManagedReference //prevent infinite recursion as address will also try to print users
+    private Address address;
+
+    @OneToOne()   // only one contact information may exist per user
+    @JsonManagedReference
+    @JoinColumn(name = "contact_information_id")
+    private ContactInformation contact_information;
 
 
     User() {}
@@ -76,6 +97,21 @@ class User {
         this.email_address = email_address;
     }
 
+
+    public List<Borrowing> getBorrowings() {
+        if(isBorrowingsEmpty()){
+            return Collections.emptyList();
+        }
+        return borrowings;
+    }
+
+    public void setBorrowings(List<Borrowing> borrowings) {
+        this.borrowings = borrowings;
+    }
+
+    public boolean isBorrowingsEmpty(){
+        return borrowings.isEmpty();
+    }
 
     @Override
     public boolean equals(Object o) {

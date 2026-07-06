@@ -42,10 +42,13 @@ class UserController {
                 .map(assembler::toModel) //
                 .collect(Collectors.toList());
 
-        return CollectionModel.of(users, linkTo(methodOn(UserController.class).all()).withSelfRel());
+        return CollectionModel.of(users, //
+                linkTo(methodOn(UserController.class).all()).withSelfRel(),
+                linkTo(methodOn(UserController.class).newUser(new User())).withRel("new")
+        );
     }
 
-    @PostMapping("/users")
+    @PostMapping("/users/new")
     ResponseEntity<?> newUser(@RequestBody User newUser) {
 
         EntityModel<User> entityModel = assembler.toModel(repository.save(newUser));
@@ -64,7 +67,7 @@ class UserController {
         return assembler.toModel(user);
     }
 
-    @PutMapping("/users/{id}")
+    @PutMapping("/users/{id}/update")
     ResponseEntity<?> replaceUser(@RequestBody User newUser, @PathVariable Long id) {
 
         User updatedUser = repository.findById(id) //
@@ -73,6 +76,7 @@ class UserController {
                     user.setEmail_address(newUser.getEmail_address());
                     user.setPassword_salt(newUser.getPassword_salt());
                     user.setPassword_hash(newUser.getPassword_hash());
+                    user.setBorrowings(newUser.getBorrowings());
                     return repository.save(user);
                 }) //
                 .orElseGet(() -> {
@@ -84,11 +88,49 @@ class UserController {
         return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
     }
 
-    @DeleteMapping("/users/{id}")
+    @DeleteMapping("/users/{id}/delete")
     ResponseEntity<?> deleteUser(@PathVariable Long id) {
 
         repository.deleteById(id);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/users/{id}/borrowings")
+    CollectionModel<EntityModel<Borrowing>> borrowings(@PathVariable Long id) {
+
+        BorrowingModelAssembler tmpAssembler = new BorrowingModelAssembler();
+
+        List<EntityModel<Borrowing>> borrowings = (repository.findById(id) //
+                .orElseThrow(() -> new UserNotFoundException(id))
+                .getBorrowings()
+                .stream()
+                .map(tmpAssembler::toModel)
+                .collect(Collectors.toList())
+        );
+
+        return CollectionModel.of(borrowings, //
+                linkTo(methodOn(UserController.class).all()).withSelfRel()
+
+        );
+    }
+
+    @GetMapping("/users/{id}/due_books")
+    CollectionModel<EntityModel<Borrowing>> due_books(@PathVariable Long id) {
+
+        BorrowingModelAssembler tmpAssembler = new BorrowingModelAssembler();
+        UserService tmpUserService = new UserServiceImpl();
+
+        List<EntityModel<Borrowing>> borrowings = (
+                tmpUserService.getDueBooks(repository.findById(id).orElseThrow(() -> new UserNotFoundException(id)))
+                .stream()
+                .map(tmpAssembler::toModel)
+                .collect(Collectors.toList())
+        );
+
+        return CollectionModel.of(borrowings, //
+                linkTo(methodOn(UserController.class).all()).withSelfRel()
+
+        );
     }
 }
