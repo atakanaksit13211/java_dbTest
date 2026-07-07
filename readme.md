@@ -31,6 +31,7 @@ as i did not implement partial updates at the moment.
 there are also other methods that are available. the hyperlinks on the endpoints should be descriptive enough to not need any documentation
 
 endpoints:
+
     - /users
     - /addresses
     - /contact_informations
