@@ -21,12 +21,12 @@ public class Borrowing {
 
     @ManyToOne
     @JoinColumn(name = "book_id")
-    @JsonManagedReference
+    //@JsonManagedReference
     private Book book;
 
     @ManyToOne //(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    @JsonManagedReference //prevent infinite recursion as user will also try to print borrowings
+    //@JsonManagedReference //prevent infinite recursion as user will also try to print borrowings
     private User user;
 
     public Borrowing(Long borrowing_id, ZonedDateTime borrowed_timestamp, ZonedDateTime due_timestamp, boolean returned, Book book, User user) {

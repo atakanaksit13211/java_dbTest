@@ -1,6 +1,7 @@
 package io.github.atakanaksit13211.java_dbTest;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -19,7 +20,8 @@ public class Book {
     private  String publisher;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "book") // books get borrowed multiple times, and we want to see the past too.
-    @JsonBackReference
+    //@JsonBackReference
+    @JsonIgnore
     private List<Borrowing> borrowing;
 
 

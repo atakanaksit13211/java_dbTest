@@ -1,6 +1,7 @@
 package io.github.atakanaksit13211.java_dbTest;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -19,7 +20,8 @@ public class Address {
     private  String post_code;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "address")
-    @JsonBackReference // prevent infinite recursion as borrowings will also try to print users
+    //@JsonBackReference // prevent infinite recursion as borrowings will also try to print users
+    @JsonIgnore
     private List<User> users;
 
     public Address(Long address_id, String address, String city, String county, String post_code) {
