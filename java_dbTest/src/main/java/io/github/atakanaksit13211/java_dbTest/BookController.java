@@ -27,10 +27,13 @@ class BookController {
 
     private final BookModelAssembler assembler;
 
+    private final BookService service;
+
     BookController(BookRepository repository, BookModelAssembler assembler) {
 
         this.repository = repository;
         this.assembler = assembler;
+        this.service = new BookServiceImpl(repository, assembler);
     }
     // end::constructor[]
 

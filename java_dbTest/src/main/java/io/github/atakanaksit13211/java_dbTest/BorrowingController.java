@@ -75,6 +75,7 @@ class BorrowingController {
                 .map(borrowing -> {
                     borrowing.setBorrowed_timestamp(newBorrowing.getBorrowed_timestamp());
                     borrowing.setDue_timestamp(newBorrowing.getDue_timestamp());
+                    borrowing.setReturned(newBorrowing.isReturned());
                     borrowing.setBook(newBorrowing.getBook());
                     borrowing.setUser(newBorrowing.getUser());
                     return repository.save(borrowing);

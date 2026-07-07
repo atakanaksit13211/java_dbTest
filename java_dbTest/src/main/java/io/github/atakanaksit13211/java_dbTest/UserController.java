@@ -26,10 +26,13 @@ class UserController {
 
     private final UserModelAssembler assembler;
 
+    private final UserService service;
+
     UserController(UserRepository repository, UserModelAssembler assembler) {
 
         this.repository = repository;
         this.assembler = assembler;
+        this.service = new UserServiceImpl(repository, assembler);
     }
     // end::constructor[]
 
@@ -37,7 +40,6 @@ class UserController {
 
     @GetMapping("/users")
     CollectionModel<EntityModel<User>> all() {
-
         List<EntityModel<User>> users = repository.findAll().stream() //
                 .map(assembler::toModel) //
                 .collect(Collectors.toList());
@@ -98,31 +100,22 @@ class UserController {
 
     @GetMapping("/users/{id}/borrowings")
     CollectionModel<EntityModel<Borrowing>> borrowings(@PathVariable Long id) {
-
-        BorrowingModelAssembler tmpAssembler = new BorrowingModelAssembler();
-
-        List<EntityModel<Borrowing>> borrowings = (repository.findById(id) //
-                .orElseThrow(() -> new UserNotFoundException(id))
-                .getBorrowings()
-                .stream()
-                .map(tmpAssembler::toModel)
-                .collect(Collectors.toList())
-        );
-
-        return CollectionModel.of(borrowings, //
-                linkTo(methodOn(UserController.class).all()).withSelfRel()
-
-        );
+        return service.getBorrowings(id);
     }
 
     @GetMapping("/users/{id}/due_books")
     CollectionModel<EntityModel<Borrowing>> due_books(@PathVariable Long id) {
 
+        User user = repository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+
+        if(!service.isThereDueBooks(user)){
+            return CollectionModel.empty();
+        }
+
         BorrowingModelAssembler tmpAssembler = new BorrowingModelAssembler();
-        UserService tmpUserService = new UserServiceImpl();
 
         List<EntityModel<Borrowing>> borrowings = (
-                tmpUserService.getDueBooks(repository.findById(id).orElseThrow(() -> new UserNotFoundException(id)))
+                service.getDueBooks(user)
                 .stream()
                 .map(tmpAssembler::toModel)
                 .collect(Collectors.toList())

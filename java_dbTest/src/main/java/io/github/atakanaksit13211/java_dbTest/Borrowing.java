@@ -17,8 +17,11 @@ public class Borrowing {
     private ZonedDateTime borrowed_timestamp;
     private ZonedDateTime due_timestamp;
 
-    @OneToOne()   // only one book may get borrowed
+    private boolean       returned;
+
+    @ManyToOne
     @JoinColumn(name = "book_id")
+    @JsonManagedReference
     private Book book;
 
     @ManyToOne //(fetch = FetchType.LAZY)
@@ -26,10 +29,11 @@ public class Borrowing {
     @JsonManagedReference //prevent infinite recursion as user will also try to print borrowings
     private User user;
 
-    public Borrowing(Long borrowing_id, ZonedDateTime borrowed_timestamp, ZonedDateTime due_timestamp, Book book, User user) {
+    public Borrowing(Long borrowing_id, ZonedDateTime borrowed_timestamp, ZonedDateTime due_timestamp, boolean returned, Book book, User user) {
         this.borrowing_id = borrowing_id;
         this.borrowed_timestamp = borrowed_timestamp;
         this.due_timestamp = due_timestamp;
+        this.returned = returned;
         this.book = book;
         this.user = user;
     }
@@ -59,6 +63,14 @@ public class Borrowing {
 
     public void setDue_timestamp(ZonedDateTime due_timestamp) {
         this.due_timestamp = due_timestamp;
+    }
+
+    public boolean isReturned() {
+        return returned;
+    }
+
+    public void setReturned(boolean returned) {
+        this.returned = returned;
     }
 
     public Book getBook() {
@@ -105,6 +117,7 @@ public class Borrowing {
                 "borrowing_id=" + getBorrowing_id() +
                 ", borrowed_timestamp=" + getBorrowed_timestamp() +
                 ", due_timestamp=" + getDue_timestamp() +
+                ", returned=" + isReturned() +
                 ", book=" + getBook() +
                 ", user=" + getUser() +
                 '}';

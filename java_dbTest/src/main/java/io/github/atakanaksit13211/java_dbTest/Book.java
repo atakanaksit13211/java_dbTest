@@ -1,5 +1,6 @@
 package io.github.atakanaksit13211.java_dbTest;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -17,8 +18,9 @@ public class Book {
     private  String isbn;
     private  String publisher;
 
-    @OneToOne(mappedBy = "book")
-    private Borrowing borrowing;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "book") // books get borrowed multiple times, and we want to see the past too.
+    @JsonBackReference
+    private List<Borrowing> borrowing;
 
 
     public Book(Long book_id, String title, String author, String isbn, String publisher) {
@@ -72,6 +74,13 @@ public class Book {
         this.publisher = publisher;
     }
 
+    public List<Borrowing> getBorrowing() {
+        return borrowing;
+    }
+
+    public void setBorrowing(List<Borrowing> borrowing) {
+        this.borrowing = borrowing;
+    }
 
     @Override
     public boolean equals(Object o) {
