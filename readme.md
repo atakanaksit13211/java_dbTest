@@ -32,10 +32,10 @@ there are also other methods that are available. the hyperlinks on the endpoints
 
 endpoints:
 
-    - /users
-    - /addresses
-    - /contact_informations
-    - /books
-    - /borrowings
+- /users
+- /addresses
+- /contact_informations
+- /books
+- /borrowings
 
-
+you will need to add things like books to borrowings or an adress to a user manually with `PUT`
