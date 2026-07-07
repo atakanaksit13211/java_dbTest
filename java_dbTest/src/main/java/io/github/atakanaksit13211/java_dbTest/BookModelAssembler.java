@@ -17,7 +17,10 @@ class BookModelAssembler implements RepresentationModelAssembler<Book, EntityMod
                 linkTo(methodOn(BookController.class).one(book.getBook_id())).withSelfRel(),
                 linkTo(methodOn(BookController.class).all()).withRel("books"),
                 linkTo(methodOn(BookController.class).replaceBook(book, book.getBook_id())).withRel("update"),
-                linkTo(methodOn(BookController.class).deleteBook(book.getBook_id())).withRel("delete")
+                linkTo(methodOn(BookController.class).deleteBook(book.getBook_id())).withRel("delete"),
+                linkTo(methodOn(BookController.class).borrowingHistory(book.getBook_id())).withRel("borrowing_history"),
+                linkTo(methodOn(BookController.class).currentBorrowing(book.getBook_id())).withRel("current_borrowing")
+
         );
     }
 }

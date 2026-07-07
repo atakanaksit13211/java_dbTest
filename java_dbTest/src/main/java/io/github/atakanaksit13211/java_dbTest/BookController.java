@@ -98,4 +98,39 @@ class BookController {
 
         return ResponseEntity.noContent().build();
     }
+
+
+    @GetMapping("/books/{id}/borrowing_history")
+    CollectionModel<EntityModel<Borrowing>> borrowingHistory(@PathVariable Long id) {
+
+        BorrowingModelAssembler tmpAssembler = new BorrowingModelAssembler();
+
+        Book book = repository.findById(id) //
+                .orElseThrow(() -> new BookNotFoundException(id));
+
+        List<EntityModel<Borrowing>> borrowings = book.getBorrowing().stream()
+                .map(tmpAssembler::toModel)
+                .toList();
+
+        return CollectionModel.of(borrowings);
+    }
+
+    @GetMapping("/books/{id}/current_borrowing")
+    ResponseEntity<?> currentBorrowing(@PathVariable Long id) {
+
+        BorrowingModelAssembler tmpAssembler = new BorrowingModelAssembler();
+
+        Book book = repository.findById(id) //
+                .orElseThrow(() -> new BookNotFoundException(id));
+
+        Borrowing borrowing = service.getCurrentBorrowing(book);
+
+        if(borrowing == null){
+            return ResponseEntity.noContent().build();
+        }
+
+        EntityModel<Borrowing> model = tmpAssembler.toModel(borrowing);
+
+        return ResponseEntity.created(model.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(model);
+    }
 }
