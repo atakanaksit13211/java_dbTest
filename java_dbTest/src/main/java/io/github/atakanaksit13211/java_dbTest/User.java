@@ -4,10 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 
 @Entity
@@ -25,16 +22,17 @@ public class User {
     private  String email_address;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-    @JsonBackReference // prevent infinite recursion as borrowings will also try to print users
+    //@JsonBackReference // prevent infinite recursion as borrowings will also try to print users
+    @JsonIgnore
     private List<Borrowing> borrowings;
 
     @ManyToOne //(fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id")
-    @JsonManagedReference //prevent infinite recursion as address will also try to print users
+    //@JsonManagedReference //prevent infinite recursion as address will also try to print users
     private Address address;
 
     @OneToOne()   // only one contact information may exist per user
-    @JsonManagedReference
+    //@JsonManagedReference
     @JoinColumn(name = "contact_information_id")
     private ContactInformation contact_information;
 
@@ -99,7 +97,7 @@ public class User {
 
 
     public List<Borrowing> getBorrowings() {
-        if(isBorrowingsEmpty()){
+        if( borrowings == null ||  isBorrowingsEmpty()){
             return Collections.emptyList();
         }
         return borrowings;
@@ -110,6 +108,9 @@ public class User {
     }
 
     public boolean isBorrowingsEmpty(){
+        if(borrowings == null){
+            return true;
+        }
         return borrowings.isEmpty();
     }
 

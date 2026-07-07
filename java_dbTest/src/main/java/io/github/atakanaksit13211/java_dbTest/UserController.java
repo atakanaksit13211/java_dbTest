@@ -78,7 +78,6 @@ class UserController {
                     user.setEmail_address(newUser.getEmail_address());
                     user.setPassword_salt(newUser.getPassword_salt());
                     user.setPassword_hash(newUser.getPassword_hash());
-                    user.setBorrowings(newUser.getBorrowings());
                     return repository.save(user);
                 }) //
                 .orElseGet(() -> {
@@ -90,6 +89,21 @@ class UserController {
         return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
     }
 
+    @PutMapping("/users/{id}/borrowing")
+    ResponseEntity<?> userAddBorrowing(@RequestBody Borrowing borrowing, @PathVariable Long id) {
+
+        User user = repository.findById(id) //
+                .orElseThrow(() -> new UserNotFoundException(id));
+
+        if(!user.isBorrowingsEmpty()){
+            user.setBorrowings( List.of(borrowing) );
+            EntityModel<User> entityModel = assembler.toModel(user);
+            return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
+        } else{
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     @DeleteMapping("/users/{id}/delete")
     ResponseEntity<?> deleteUser(@PathVariable Long id) {
 
@@ -98,7 +112,7 @@ class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/users/{id}/borrowings")
+    @GetMapping("/users/{id}/borrowing_list")
     CollectionModel<EntityModel<Borrowing>> borrowings(@PathVariable Long id) {
         return service.getBorrowings(id);
     }

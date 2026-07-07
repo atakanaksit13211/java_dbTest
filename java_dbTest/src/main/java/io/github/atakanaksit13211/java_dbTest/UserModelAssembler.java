@@ -18,7 +18,7 @@ public class UserModelAssembler implements RepresentationModelAssembler<User, En
                 linkTo(methodOn(UserController.class).all()).withRel("users"),
                 linkTo(methodOn(UserController.class).replaceUser(user, user.getUser_id())).withRel("update"),
                 linkTo(methodOn(UserController.class).deleteUser(user.getUser_id())).withRel("delete"),
-                linkTo(methodOn(UserController.class).borrowings(user.getUser_id())).withRel("borrowings"),
+                linkTo(methodOn(UserController.class).borrowings(user.getUser_id())).withRel("borrowing_list"),
                 linkTo(methodOn(UserController.class).due_books(user.getUser_id())).withRel("due_books")
 
         );
