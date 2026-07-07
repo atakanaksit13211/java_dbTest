@@ -27,10 +27,13 @@ class AddressController {
 
     private final AddressModelAssembler assembler;
 
+    private final AddressService service;
+
     AddressController(AddressRepository repository, AddressModelAssembler assembler) {
 
         this.repository = repository;
         this.assembler = assembler;
+        this.service = new AddressServiceImpl(repository, assembler);
     }
     // end::constructor[]
 

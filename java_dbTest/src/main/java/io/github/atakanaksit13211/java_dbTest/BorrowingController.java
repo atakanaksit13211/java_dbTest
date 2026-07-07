@@ -27,10 +27,13 @@ class BorrowingController {
 
     private final BorrowingModelAssembler assembler;
 
+    private final BorrowingService service;
+
     BorrowingController(BorrowingRepository repository, BorrowingModelAssembler assembler) {
 
         this.repository = repository;
         this.assembler = assembler;
+        this.service = new BorrowingServiceImpl(repository, assembler);
     }
     // end::constructor[]
 

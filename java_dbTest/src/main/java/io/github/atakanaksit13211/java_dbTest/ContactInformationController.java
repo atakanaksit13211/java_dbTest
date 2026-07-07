@@ -27,10 +27,13 @@ class ContactInformationController {
 
     private final ContactInformationModelAssembler assembler;
 
+    private final ContactInformationService service;
+
     ContactInformationController(ContactInformationRepository repository, ContactInformationModelAssembler assembler) {
 
         this.repository = repository;
         this.assembler = assembler;
+        this.service = new ContactInformationServiceImpl(repository, assembler);
     }
     // end::constructor[]
 
@@ -50,9 +53,14 @@ class ContactInformationController {
     }
 
     @PostMapping("/contact_informations/new")
-    ResponseEntity<?> newContact_information(@RequestBody ContactInformation newContactInformation) {
+    ResponseEntity<?> newContact_information(@RequestBody ContactInformation newContact_information) {
 
-        EntityModel<ContactInformation> entityModel = assembler.toModel(repository.save(newContactInformation));
+        ContactInformation sanitized = new ContactInformation(
+                service.sanitizePhoneNumber(newContact_information.getPrimary_phone_number()),
+                service.sanitizeEMailAddress(newContact_information.getAlternative_email())
+        );
+
+        EntityModel<ContactInformation> entityModel = assembler.toModel(repository.save(sanitized));
 
         return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
     }
@@ -73,12 +81,16 @@ class ContactInformationController {
 
         ContactInformation updatedContactInformation = repository.findById(id) //
                 .map(contact_information -> {
-                    contact_information.setPrimary_phone_number(newContact_information.getPrimary_phone_number());
-                    contact_information.setAlternative_email(newContact_information.getAlternative_email());
+                    contact_information.setPrimary_phone_number(service.sanitizePhoneNumber(newContact_information.getPrimary_phone_number()));
+                    contact_information.setAlternative_email(service.sanitizeEMailAddress(newContact_information.getAlternative_email()));
                     return repository.save(contact_information);
                 }) //
                 .orElseGet(() -> {
-                    return repository.save(newContact_information);
+                    ContactInformation sanitized = new ContactInformation(
+                            service.sanitizePhoneNumber(newContact_information.getPrimary_phone_number()),
+                            service.sanitizeEMailAddress(newContact_information.getAlternative_email())
+                            );
+                    return repository.save(sanitized);
                 });
 
         EntityModel<ContactInformation> entityModel = assembler.toModel(updatedContactInformation);

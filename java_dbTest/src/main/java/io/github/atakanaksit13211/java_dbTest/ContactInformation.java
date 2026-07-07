@@ -18,8 +18,7 @@ public class ContactInformation {
     private User user;
 
 
-    public ContactInformation(Long contact_information_id, String primary_phone_number, String alternative_email) {
-        this.contact_information_id = contact_information_id;
+    public ContactInformation(String primary_phone_number, String alternative_email) {
         this.primary_phone_number = primary_phone_number;
         this.alternative_email = alternative_email;
     }
