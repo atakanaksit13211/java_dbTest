@@ -1,6 +1,6 @@
-## Java database test - with rest
+# Java database test - with rest
 
-# how to replicate:
+## how to replicate:
 - first you will need a postgreSQL server running on port 5432 (the default)
 - we will need a database called `dbTest_1`
 - use the given database backup in the `database_folders` folder to hopefully recreate the db.
@@ -8,7 +8,7 @@
 
 - then you may use postman to interract with the system. it should open a port on 8080 where you can send requests to `/users` to do things
 
-# usage
+## usage
 
 - a `GET` request will list all users. use `/users/{id}` to get a specific user.
 
@@ -24,13 +24,17 @@
 ```
 as i did not implement partial updates at the moment.
 
-- to delete a user send a `DELETE` request to the user page.
+- to delete a user send a `DELETE` request to the user page
 
-# screenshots
-![1](screenshots/postman7.png)
-![2](screenshots/postman6.png)
-![3](screenshots/postman5.png)
-![4](screenshots/postman4.png)
-![5](screenshots/postman3.png)
-![6](screenshots/postman2.png)
-![7](screenshots/postman1.png)
+## other stuff
+
+there are also other methods that are available. the hyperlinks on the endpoints should be descriptive enough to not need any documentation
+
+endpoints:
+    - /users
+    - /addresses
+    - /contact_informations
+    - /books
+    - /borrowings
+
+

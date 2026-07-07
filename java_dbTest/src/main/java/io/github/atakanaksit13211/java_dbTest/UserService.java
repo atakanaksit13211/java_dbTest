@@ -21,6 +21,8 @@ public interface UserService {
 
     CollectionModel<EntityModel<Borrowing>> getBorrowings(Long id);
 
+    EntityModel<Address> getAddress(Long id);
 
+    EntityModel<ContactInformation> getContact(Long id);
 
 }

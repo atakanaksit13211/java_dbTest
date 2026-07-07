@@ -61,7 +61,26 @@ public class UserServiceImpl implements UserService {
         );
     }
 
+    @Override
+    public EntityModel<Address> getAddress(Long id) {
+        AddressModelAssembler tmpAssembler = new AddressModelAssembler();
 
+        User user = repository.findById(id) //
+                .orElseThrow(() -> new UserNotFoundException(id));
+
+        return tmpAssembler.toModel(user.getAddress());
+
+    }
+
+    @Override
+    public EntityModel<ContactInformation> getContact(Long id) {
+        ContactInformationModelAssembler tmpAssembler = new ContactInformationModelAssembler();
+
+        User user = repository.findById(id) //
+                .orElseThrow(() -> new UserNotFoundException(id));
+
+        return tmpAssembler.toModel(user.getContact_information());
+    }
 
 
 }

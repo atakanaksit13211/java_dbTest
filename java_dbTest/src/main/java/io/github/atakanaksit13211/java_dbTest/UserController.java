@@ -89,19 +89,46 @@ class UserController {
         return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
     }
 
-    @PutMapping("/users/{id}/borrowing")
+    @PostMapping("/users/{id}/borrowing/add")
     ResponseEntity<?> userAddBorrowing(@RequestBody Borrowing borrowing, @PathVariable Long id) {
+
+        User user = repository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(id));
+
+        user.addBorrowing(borrowing);
+
+        repository.save(user);
+
+        EntityModel<User> entityModel = assembler.toModel(user);
+        return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
+    }
+
+    @PutMapping("/users/{id}/address")
+    ResponseEntity<?> userSetAddress(@RequestBody Address address, @PathVariable Long id) {
 
         User user = repository.findById(id) //
                 .orElseThrow(() -> new UserNotFoundException(id));
 
-        if(!user.isBorrowingsEmpty()){
-            user.setBorrowings( List.of(borrowing) );
-            EntityModel<User> entityModel = assembler.toModel(user);
-            return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
-        } else{
-            return ResponseEntity.notFound().build();
-        }
+        user.setAddress(address);
+
+        repository.save(user);
+
+        EntityModel<User> entityModel = assembler.toModel(user);
+        return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
+    }
+
+    @PutMapping("/users/{id}/contact_information")
+    ResponseEntity<?> userSetContact(@RequestBody ContactInformation contactInformation, @PathVariable Long id) {
+
+        User user = repository.findById(id) //
+                .orElseThrow(() -> new UserNotFoundException(id));
+
+        user.setContact_information(contactInformation);
+
+        repository.save(user);
+
+        EntityModel<User> entityModel = assembler.toModel(user);
+        return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
     }
 
     @DeleteMapping("/users/{id}/delete")
@@ -115,6 +142,16 @@ class UserController {
     @GetMapping("/users/{id}/borrowing_list")
     CollectionModel<EntityModel<Borrowing>> borrowings(@PathVariable Long id) {
         return service.getBorrowings(id);
+    }
+
+    @GetMapping("/users/{id}/address")
+    EntityModel<Address> address(@PathVariable Long id) {
+        return service.getAddress(id);
+    }
+
+    @GetMapping("/users/{id}/contact_information")
+    EntityModel<ContactInformation> contact(@PathVariable Long id) {
+        return service.getContact(id);
     }
 
     @GetMapping("/users/{id}/due_books")

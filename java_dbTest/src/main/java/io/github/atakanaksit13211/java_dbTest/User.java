@@ -1,5 +1,6 @@
 package io.github.atakanaksit13211.java_dbTest;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -107,11 +108,34 @@ public class User {
         this.borrowings = borrowings;
     }
 
+    public void addBorrowing(Borrowing borrowing){
+        if(borrowings == null){
+            this.borrowings = new ArrayList<Borrowing>();
+        }
+        this.borrowings.add(borrowing);
+    }
+
     public boolean isBorrowingsEmpty(){
         if(borrowings == null){
             return true;
         }
         return borrowings.isEmpty();
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    public ContactInformation getContact_information() {
+        return contact_information;
+    }
+
+    public void setContact_information(ContactInformation contact_information) {
+        this.contact_information = contact_information;
     }
 
     @Override
