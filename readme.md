@@ -41,6 +41,7 @@ endpoints:
 you will need to add things like books to borrowings or an adress to a user manually with `PUT`
 
 ## Screenshots
+These screenshots were taken as the api was getting implemented. Earlier screenshots may not expose all endpoints like `/books/id/current_borrowing`
 ![screenshot](screenshots/postman_16.png)
 ![screenshot](screenshots/postman_15.png)
 ![screenshot](screenshots/postman_14.png)
